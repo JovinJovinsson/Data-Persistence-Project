@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    // Added to make this into a Singleton for persistence in session
+    public static ScoreManager Instance;
+
+    [SerializeField] private string playerName;
+    public string PlayerName
     {
-        
+        get { return playerName; }
+        set { playerName = value; }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
