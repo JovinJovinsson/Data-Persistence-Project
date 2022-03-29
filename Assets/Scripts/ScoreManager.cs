@@ -8,11 +8,18 @@ public class ScoreManager : MonoBehaviour
     // Added to make this into a Singleton for persistence in session
     public static ScoreManager Instance;
 
-    [SerializeField] private string playerName;
-
     [SerializeField] private string highScorePlayerName;
+    public string HighScorePlayerName
+    {
+        get { return highScorePlayerName; }
+    }
     [SerializeField] private int highScore;
+    public int HighScore
+    {
+        get { return highScore; }
+    }
 
+    [SerializeField] private string playerName;
     public string PlayerName
     {
         get { return playerName; }
@@ -30,6 +37,19 @@ public class ScoreManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        LoadHighScore();
+    }
+
+    // This is an update method for the score
+    public void UpdateHighScore(int score)
+    {
+        // If the high score has been passed, update the values
+        if (score >= highScore)
+        {
+            highScorePlayerName = PlayerName;
+            highScore = score;
+        }
     }
 
     [System.Serializable]
@@ -39,12 +59,12 @@ public class ScoreManager : MonoBehaviour
         public int highScore;
     }
 
-    private void SaveHighScore(int newScore)
+    public void SaveHighScore()
     {
         SaveData data = new SaveData();
 
-        data.highScore = newScore;
-        data.highScorePlayerName = PlayerName;
+        data.highScore = HighScore;
+        data.highScorePlayerName = HighScorePlayerName;
 
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Application.persistentDataPath + "/highscore.json", json);
@@ -60,6 +80,10 @@ public class ScoreManager : MonoBehaviour
 
             highScorePlayerName = data.highScorePlayerName;
             highScore = data.highScore;
+        } else
+        {
+            highScorePlayerName = "_ _ _";
+            highScore = 0;
         }
     }
 }
