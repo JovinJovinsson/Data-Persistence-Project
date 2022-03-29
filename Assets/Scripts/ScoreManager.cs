@@ -8,8 +8,6 @@ public class ScoreManager : MonoBehaviour
     // Added to make this into a Singleton for persistence in session
     public static ScoreManager Instance;
 
-    readonly string saveFile = Application.persistentDataPath + "/highscore.json";
-
     [SerializeField] private string playerName;
 
     [SerializeField] private string highScorePlayerName;
@@ -49,14 +47,15 @@ public class ScoreManager : MonoBehaviour
         data.highScorePlayerName = PlayerName;
 
         string json = JsonUtility.ToJson(data);
-        File.WriteAllText(saveFile, json);
+        File.WriteAllText(Application.persistentDataPath + "/highscore.json", json);
     }
 
     private void LoadHighScore()
     {
-        if (File.Exists(saveFile))
+        string path = Application.persistentDataPath + "/highscore.json";
+        if (File.Exists(path))
         {
-            string json = File.ReadAllText(saveFile);
+            string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
             highScorePlayerName = data.highScorePlayerName;
